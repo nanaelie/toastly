@@ -58,7 +58,7 @@ export default function App() {
                             message: "Hello from Toastly Hello from Toastly",
                             allowDismiss: true,
                             loading: true,
-                            autoDismissIn: 3_3000
+                            autoDismissIn: 3_000
                         })
                     }
                 >

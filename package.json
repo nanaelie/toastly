@@ -19,9 +19,9 @@
 	],
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build && tsc --emitDeclarationOnly",
+		"build": "npm run build:css && vite build && tsc --emitDeclarationOnly",
 		"typecheck": "tsc --noEmit",
-		"build:css": "npx @tailwindcss/cli -i ./src/styles.css -o ./src/toastly-2.css --minify"
+		"build:css": "npx @tailwindcss/cli -i ./src/styles.css -o ./src/index.css --minify"
 	},
 	"peerDependencies": {
 		"react": ">=18.0.0",

@@ -8,6 +8,13 @@ interface ToastProps {
     onDismiss?: (id: string) => void;
 }
 
+const variantStyles: Record<NonNullable<Toast["variant"]>, string> = {
+    info: "border-gray-400 bg-white dark:border-slate-700 dark:bg-slate-900/20",
+    success: "border-green-600/50 bg-green-600/10",
+    warning: "border-yellow-600/50 bg-yellow-600/10",
+    error: "border-red-600/50 bg-red-600/10",
+};
+
 export default function Toasts({ toasts, onDismiss, position }: ToastProps) {
     const toastPosition: Record<ToastlyPosition, string> = {
         "tl": "top-4 left-4",
@@ -35,14 +42,7 @@ export default function Toasts({ toasts, onDismiss, position }: ToastProps) {
             {toasts.map((alert) => (
                 <div key={alert.id}
                     className={`relative flex w-full items-start justify-center gap-3 rounded-lg border p-3 py-3 shadow-lg backdrop-blur-2xl
-                        ${alert.variant === "info" ?
-                            "border-gray-400 bg-white dark:border-slate-700 dark:bg-slate-900/20":
-                                alert.variant === "error" ?
-                                    "border-red-600/50 bg-red-600/10" : 
-                                        alert.variant === "warning" ?
-                                            "border-yellow-600/50 bg-yellow-600/10" :
-                                                "border-gray-500/50 bg-white-600/10"
-                        }
+                        ${variantStyles[alert.variant ?? "info"]}
                     `}
                 >
                     <span className="mt-0.5 block h-5 w-5 shrink-0">
@@ -152,4 +152,3 @@ export default function Toasts({ toasts, onDismiss, position }: ToastProps) {
         </div>
     );
 }
-
