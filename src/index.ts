@@ -1,4 +1,5 @@
-import './toastly.css';
+import './index.css';
+import './index.css';
 
 // if (typeof document !== 'undefined') {
 //     const styleId = 'alertify-react-styles'

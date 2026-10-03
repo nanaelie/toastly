@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Alert, Confirm, Toast as ToastType } from "../types";
+import type { Alert, Confirm, ProviderProps, Toast as ToastType } from "../types";
 import Toasts from "./Toasts";
 import AlertModal from "./AlertModal";
 import ConfirmModal from "./ConfirmModal";
 
-export default function Provider() {
+
+export default function Provider({ position = 'bl', duration = 3_000 } : ProviderProps) {
     const [toasts, setToasts] = useState<ToastType[]>([]);
     const [openAlert, setOpenAlert] = useState<Alert>({ open: false, message: ''});
     const [openConfirm, setOpenConfirm] = useState<Confirm>({
@@ -131,6 +132,7 @@ export default function Provider() {
             <Toasts
                 toasts={toasts}
                 onDismiss={handleDismiss}
+                position={position}
             />
         </div>
     );

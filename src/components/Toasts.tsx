@@ -1,19 +1,40 @@
 "use client";
 
-import type { Toast } from "../types";
+import type { Toast, ToastlyPosition } from "../types";
 
 interface ToastProps {
     toasts: Toast[];
+    position: ToastlyPosition;
     onDismiss?: (id: string) => void;
 }
 
-export default function Toasts({ toasts, onDismiss }: ToastProps) {
+export default function Toasts({ toasts, onDismiss, position }: ToastProps) {
+    const toastPosition: Record<ToastlyPosition, string> = {
+        "tl": "top-4 left-4",
+        "top-left": "top-4 left-4",
+        "tc": "top-4 left-1/2 -translate-x-1/2",
+        "top-center": "top-4 left-1/2 -translate-x-1/2",
+        "tr": "top-4 right-4",
+        "top-right": "top-4 right-4",
+        "lc": "top-1/2 left-4 -translate-y-1/2",
+        "left-center": "top-1/2 left-4 -translate-y-1/2",
+        "c": "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+        "center": "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+        "rc": "top-1/2 right-4 -translate-y-1/2",
+        "right-center": "top-1/2 right-4 -translate-y-1/2",
+        "bl": "bottom-4 left-4",
+        "bottom-left": "bottom-4 left-4",
+        "bc": "bottom-4 left-1/2 -translate-x-1/2",
+        "bottom-center": "bottom-4 left-1/2 -translate-x-1/2",
+        "br": "bottom-4 right-4",
+        "bottom-right": "bottom-4 right-4",
+    }
+
     return (
-        <div className="fixed bottom-4 left-4 z-9999 min-w-62 max-w-xs space-y-2 text-gray-900 dark:text-white">
+        <div className={`fixed ${toastPosition[position]} z-9999 min-w-62 max-w-xs space-y-2 text-gray-900 dark:text-white`}>
             {toasts.map((alert) => (
-                <div
-                    key={alert.id}
-                    className={`relative flex w-full items-start gap-3 rounded-lg border p-3 py-3 shadow-lg backdrop-blur-2xl
+                <div key={alert.id}
+                    className={`relative flex w-full items-start justify-center gap-3 rounded-lg border p-3 py-3 shadow-lg backdrop-blur-2xl
                         ${alert.variant === "info" ?
                             "border-gray-400 bg-white dark:border-slate-700 dark:bg-slate-900/20":
                                 alert.variant === "error" ?
@@ -120,7 +141,7 @@ export default function Toasts({ toasts, onDismiss }: ToastProps) {
                     {alert.allowDismiss && (
                         <button
                             onClick={() => { onDismiss?.(alert.id) }}
-                            className="absolute right-1.5 top-1 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+                            className="absolute cursor-pointer right-1.5 top-1 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
                             aria-label="Dismiss"
                         >
                             &times;
