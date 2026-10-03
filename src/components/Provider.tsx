@@ -1,13 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import type { Alert, Confirm, Toast as ToastType } from "../types";
+import { useEffect, useRef, useState } from "react";
+import type { Alert, Confirm, ProviderProps, Toast as ToastType } from "../types";
 import Toasts from "./Toasts";
 import AlertModal from "./AlertModal";
 import ConfirmModal from "./ConfirmModal";
 
-export default function Provider() {
+
+export default function Provider({ position = 'bl', duration = 3_000 } : ProviderProps) {
     const [toasts, setToasts] = useState<ToastType[]>([]);
+    const toastIds = useRef(new Set<string>());
+    const toastTimeouts = useRef(new Map<string, number>());
+    const durationRef = useRef(duration);
+    durationRef.current = duration;
     const [openAlert, setOpenAlert] = useState<Alert>({ open: false, message: ''});
     const [openConfirm, setOpenConfirm] = useState<Confirm>({
         open: false, 
@@ -18,6 +23,16 @@ export default function Provider() {
         onConfirm: () => {},
     });
 
+    const dismissToast = (id: string) => {
+        toastIds.current.delete(id);
+        const timeout = toastTimeouts.current.get(id);
+        if (timeout !== undefined) {
+            window.clearTimeout(timeout);
+            toastTimeouts.current.delete(id);
+        }
+        setToasts((current) => current.filter((toast) => toast.id !== id));
+    };
+
     useEffect(() => {
         const handleAddToast = (e: Event) => {
             const { detail: _detail } = e as CustomEvent<ToastType>;
@@ -27,21 +42,20 @@ export default function Provider() {
                 id: _detail.id || `temp-${Date.now()}-${Math.random().toString(36).slice(2)}`
             };
 
-            setToasts((prev) => {
-                if (prev.some((a) => a.id === detail.id)) return prev;
-                return [detail, ...prev];
-            });
+            if (toastIds.current.has(detail.id)) return;
+            toastIds.current.add(detail.id);
+            setToasts((prev) => [detail, ...prev]);
 
-            if (detail.autoDismissIn) {
-                window.setTimeout(() => {
-                    setToasts(prev => prev.filter(a => a.id !== detail.id));
-                }, detail.autoDismissIn);
+            const autoDismissIn = detail.autoDismissIn ?? Number(durationRef.current);
+            if (Number.isFinite(autoDismissIn) && autoDismissIn >= 0) {
+                const timeout = window.setTimeout(() => dismissToast(detail.id), autoDismissIn);
+                toastTimeouts.current.set(detail.id, timeout);
             }
         };
 
         const handleDismiss = (e: Event) => {
             const { detail } = e as CustomEvent<{ id: string }>;
-            setToasts((prev) => prev.filter((a) => a.id !== detail.id));
+            dismissToast(detail.id);
         };
 
         const handleAlert = (e: Event) => {
@@ -79,14 +93,11 @@ export default function Provider() {
             window.removeEventListener("toastly:dismiss-alert", handleDismiss);
             window.removeEventListener("toastly:alert", handleAlert);
             window.removeEventListener("toastly:confirm", handleConfirm);
+            toastTimeouts.current.forEach((timeout) => window.clearTimeout(timeout));
+            toastTimeouts.current.clear();
+            toastIds.current.clear();
         };
     }, []);
-
-    const handleDismiss = (id: string) => {
-        setToasts((current) =>
-            current.filter((toast) => toast.id !== id)
-        );
-    };
 
     const handleCloseAlert = () => {
         openAlert.onClose?.();
@@ -130,7 +141,8 @@ export default function Provider() {
             />
             <Toasts
                 toasts={toasts}
-                onDismiss={handleDismiss}
+                onDismiss={dismissToast}
+                position={position}
             />
         </div>
     );

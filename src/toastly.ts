@@ -9,6 +9,39 @@ export const toastly = {
         );
     },
 
+    success: (alert: ToastEvent) => {
+        window.dispatchEvent(
+            new CustomEvent("toastly:add-alert", {
+                detail: {
+                    ...alert,
+                    variant: "success",
+                },
+            })
+        );
+    },
+
+    error: (alert: ToastEvent) => {
+        window.dispatchEvent(
+            new CustomEvent("toastly:add-alert", {
+                detail: {
+                    ...alert,
+                    variant: "error",
+                },
+            })
+        );
+    },
+
+    info: (alert: ToastEvent) => {
+        window.dispatchEvent(
+            new CustomEvent("toastly:add-alert", {
+                detail: {
+                    ...alert,
+                    variant: "info",
+                },
+            })
+        );
+    },
+
     dismiss: (id: string) => {
         window.dispatchEvent(
             new CustomEvent("toastly:dismiss-alert", {

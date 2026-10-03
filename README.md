@@ -14,7 +14,7 @@ A lightweight React library for **toasts**, **alert modals** and **confirm modal
 ## Installation
 
 ```bash
-npm install toastly
+npm install @toastly/toastly
 ```
 
 `react` and `react-dom` are required as peer dependencies.
@@ -24,7 +24,7 @@ npm install toastly
 Wrap your app with `ToastlyProvider`. It listens for events and renders toasts and modals.
 
 ```tsx
-import { ToastlyProvider } from "toastly";
+import { ToastlyProvider } from "@toastly/toastly";
 
 export default function App() {
   return (
@@ -40,13 +40,13 @@ Next.js (App Router): put the provider in `app/layout.tsx`. It is already a clie
 Styles are bundled with the package (`dist/index.css`). If your bundler does not load them automatically, import them manually:
 
 ```ts
-import "toastly/dist/index.css";
+import "@toastly/toastly/index.css";
 ```
 
 ## Usage
 
 ```ts
-import { toastly } from "toastly";
+import { toastly } from "@toastly/toastly";
 ```
 
 ### Toasts
@@ -107,6 +107,8 @@ toastly.confirm({
 | Prop       | Type              | Description                         |
 | ---------- | ----------------- | ----------------------------------- |
 | `children` | `React.ReactNode` | Your app (**required**)             |
+| `position` | `ToastlyPosition` | Position of the toast stack (default: `"bl"`) |
+| `duration` | `number \| \`${number}\`` | Default toast duration in milliseconds (default: `3000`; overridden by `autoDismissIn`) |
 
 ### `toastly.add(toast: ToastEvent)`
 
@@ -141,14 +143,14 @@ Closes the toast with the given `id`.
 ## Exports
 
 ```ts
-import { ToastlyProvider, AlertModal, ConfirmModal, toastly } from "toastly";
+import { ToastlyProvider, AlertModal, ConfirmModal, toastly } from "@toastly/toastly";
 
 import type {
   ToastVariant,
   ToastEvent,
   AlertEvent,
   ConfirmEvent,
-} from "toastly";
+} from "@toastly/toastly";
 ```
 
 ## Development
